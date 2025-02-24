@@ -14,6 +14,9 @@ const recetasSchema = new Schema({
     },
     instrucciones:{
         type:String
+    },
+    nutricionista:{
+        type:String
     }
 
 },

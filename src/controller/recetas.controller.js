@@ -3,9 +3,9 @@ import Recetas from '../models/Recetas'
 export const createRecetas = async (req, res) => {
 
     try {
-        const { title, img, ingredientes,instrucciones} = req.body
+        const { title, img, ingredientes,instrucciones,nutricionista} = req.body
         let arrayIngredientes = ingredientes.split(',')
-        const newReceta = new Recetas({ title, img, arrayIngredientes,instrucciones })
+        const newReceta = new Recetas({ title, img, arrayIngredientes,instrucciones,nutricionista })
         if (req.file) {
             const { filename } = req.file;
             newReceta.setImgUrl(filename)
@@ -21,11 +21,12 @@ export const createRecetas = async (req, res) => {
 export const getRecetas = async (req, res) => { 
     try {
         const recetas = await Recetas.find()
+        .sort({ fecha: -1 }) // Ordena por fecha descendente (los más recientes primero)
+        .limit(10); // Limita a los 10 últimos documentos
         res.json(recetas);
     } catch (error) {
         res.status(400).json(error);
     }
-    
 }
 
 
@@ -60,7 +61,7 @@ export const updateReceta = async (req,res) => {
     }
 }
 
-export const deletePartido = async (req,res) => {
+export const deleteReceta = async (req,res) => {
     try {
         const deleteReceta = await Recetas.findByIdAndDelete(req.params.recetaId)
         res.status(201).json({message:'OK'})
