@@ -48,3 +48,35 @@ export const signIn = async (req,res) => {
     console.log(userFound)
     res.json({token:token})
 }
+
+
+export const signInAdmin = async (req, res) => {
+    try {
+        const userFound = await User.findOne({ email: req.body.email }).populate("roles");
+
+        if (!userFound) return res.status(400).json({ message: 'User Not Found' });
+
+        const matchPassword = await User.comparePassword(req.body.password, userFound.password);
+
+        if (!matchPassword) return res.status(401).json({ token: null, message: 'Invalid Password' });
+
+        // Verificar si el usuario tiene rol de admin o moderator
+        const allowedRoles = ["admin", "moderator"];
+        const hasAllowedRole = userFound.roles.some(role => allowedRoles.includes(role.name));
+
+        if (!hasAllowedRole) {
+            return res.status(403).json({ message: 'Acceso denegado: No tienes permiso de Admin.' });
+        }
+
+        // Generar el token si cumple con los requisitos
+        const token = jwt.sign({ id: userFound._id }, config.SECRET, { expiresIn: "1d" });
+
+        res.json({ 
+            token:token,
+            userId:userFound._id,
+            roles: userFound.roles.map(role => role.name)});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};

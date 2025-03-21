@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import appConfig from '../config';
+import mongoosePaginate from 'mongoose-paginate-v2';
+
 
 const recetasSchema = new Schema({
    
@@ -29,4 +31,5 @@ recetasSchema.methods.setImgUrl = function setImgUrl (filename){
     this.img = `${host}/public/${filename}`
 }
 
+recetasSchema.plugin(mongoosePaginate);
 export default model('receta', recetasSchema) 

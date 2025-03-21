@@ -1,4 +1,6 @@
 import Recetas from '../models/Recetas'
+import appConfig from '../config';
+
 
 export const createRecetas = async (req, res) => {
 
@@ -20,14 +22,20 @@ export const createRecetas = async (req, res) => {
 
 export const getRecetas = async (req, res) => { 
     try {
-        const recetas = await Recetas.find()
-        .sort({ fecha: -1 }) // Ordena por fecha descendente (los más recientes primero)
-        .limit(10); // Limita a los 10 últimos documentos
-        res.json(recetas);
+        let { page = 1, limit = 10 } = req.query;
+        page = parseInt(page);
+        limit = parseInt(limit);
+
+        const options = { page, limit, sort: { _id: -1 } };
+
+        const result = await Recetas.paginate({}, options);
+        
+        res.json(result); // Devuelve totalDocs, totalPages, nextPage, prevPage, etc.
+
     } catch (error) {
         res.status(400).json(error);
     }
-}
+};
 
 
 export const getRecetasById = async (req, res) => { 
@@ -41,6 +49,8 @@ export const getRecetasById = async (req, res) => {
 }
 
 export const updateReceta = async (req,res) => {
+    console.log('body con image', req.body.arrayIngredientes)
+    console.log('title', req.body.title)
     try {
         if (req.file) {
             const { filename } = req.file;
@@ -48,7 +58,15 @@ export const updateReceta = async (req,res) => {
             console.log(host)
             req.body.img =  `${host}/public/${filename}`
         }
-        console.log(req.body)
+
+        if (typeof req.body.arrayIngredientes === 'string') {
+            req.body.arrayIngredientes = req.body.arrayIngredientes
+                .replace(/^["']|["']$/g, '') // 🔥 Elimina comillas al inicio y final
+                .split(',')
+                .map(ing => ing.trim());
+        }
+
+        console.log('body con image procesado', req.body.arrayIngredientes)
         const updateReceta =  await Recetas.findByIdAndUpdate(req.params.recetaId, req.body,{
             new:true
         })
