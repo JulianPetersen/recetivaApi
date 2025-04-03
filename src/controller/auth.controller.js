@@ -2,7 +2,7 @@ import User from '../models/User'
 import jwt from 'jsonwebtoken'
 import config from '../config'
 import Role from '../models/Role'
-
+import AdminUser from '../models/AdminUser'
 
 export const signUp = async (req, res) => {
     if (req.query.platform == 'mobile') {
@@ -39,10 +39,15 @@ export const signUp = async (req, res) => {
             const foundRoles = await Role.find({ name: { $in: roles } })
             newUser.roles = foundRoles.map(role => role._id);
         } else {
-            const role = await Role.findOne({ name: 'moedrator' })
+            const role = await Role.findOne({ name: 'moderator' })
             newUser.roles = [role._id]
         }
         const savedUser = await newUser.save();
+
+        const newAdminInfoUser = new AdminUser ({
+            user:savedUser._id,
+        })
+        const savedAdminInfoUser = await newAdminInfoUser.save()
 
         const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
 
