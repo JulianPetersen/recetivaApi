@@ -4,7 +4,7 @@ import './config/db.js'
 import {createRoles} from './libs/initialSetup'
 import morgan from 'morgan';
 import cors from 'cors'
-
+import {startCleanupJob} from './croneServices/DeleteLogs'
 //routes
 import authRoutes from './routes/auth.routes.js';
 import recetasRoutes from'./routes/recetas.routes.js'
@@ -16,6 +16,7 @@ createRoles();
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors())
+startCleanupJob();
 
 var path = require('path')
 

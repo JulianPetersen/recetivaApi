@@ -1,13 +1,16 @@
 import {ROLES} from '../models/Role'
 import User from '../models/User'
+import {createLog} from '../services/logWorkFlow'
 
 
 export const checkDuplicateUsernameOrEmail = async (req,res,next) => {
     
     const email = await User.findOne({email: req.body.email})
 
-    if(email) return res.status(400).json({message:'el email ya existe'})
-
+    if(email){
+        await createLog(email.email, 'el email ya existe', 'signUp', '400')
+        return res.status(400).json({message:'el email ya existe'})  
+    } 
     next();
 }
 

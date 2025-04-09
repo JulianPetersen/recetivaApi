@@ -1,59 +1,31 @@
 import User from '../models/User'
 import jwt from 'jsonwebtoken'
 import config from '../config'
-import Role from '../models/Role'
-import AdminUser from '../models/AdminUser'
+import { createUserForMobile, createUserForWeb } from '../services/authService';
+import {createLog} from '../services/logWorkFlow'
 
 export const signUp = async (req, res) => {
+
+    const { email, password, roles } = req.body;
+
     if (req.query.platform == 'mobile') {
-        const { email, password, roles } = req.body;
-
-        const newUser = new User({
-            email,
-            password: await User.encryptPassword(password)
-        })
-
-        if (roles) {
-            const foundRoles = await Role.find({ name: { $in: roles } })
-            newUser.roles = foundRoles.map(role => role._id);
-        } else {
-            const role = await Role.findOne({ name: 'user' })
-            newUser.roles = [role._id]
+        try {
+            const { token, user } = await createUserForMobile(email, password, roles);
+            await createLog(email, 'Usuario creado correctamente','signUp','200')
+            return res.status(200).json({ token,user });
+        } catch (error) {
+            
+            return res.status(500).json({ message: 'Error en la creación del usuario', error: error.message });
         }
-        const savedUser = await newUser.save();
-
-        const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
-
-        })
-
-        res.status(200).json({ token })
     } else if (req.query.platform == 'web') {
-        const { email, password, roles } = req.body;
-
-        const newUser = new User({
-            email,
-            password: await User.encryptPassword(password)
-        })
-
-        if (roles) {
-            const foundRoles = await Role.find({ name: { $in: roles } })
-            newUser.roles = foundRoles.map(role => role._id);
-        } else {
-            const role = await Role.findOne({ name: 'moderator' })
-            newUser.roles = [role._id]
+        try {
+            const { token, user } = await createUserForWeb(email, password, roles);
+            return res.status(200).json({ token,user });
+        } catch (error) {
+            return res.status(500).json({ message: 'Error en la creación del usuario', error: error.message });
         }
-        const savedUser = await newUser.save();
-
-        const newAdminInfoUser = new AdminUser ({
-            user:savedUser._id,
-        })
-        const savedAdminInfoUser = await newAdminInfoUser.save()
-
-        const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
-
-        })
-
-        res.status(200).json({ token })
+    } else {
+        return res.status(400).json({ message: 'Plataforma no válida' });
     }
 
 }
