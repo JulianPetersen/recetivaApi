@@ -19,6 +19,11 @@ const infoUserAdminSchema = new Schema({
         type:String,
         required:false,
     },
+    isActive:{
+        type:Boolean,
+        requiered:true,
+        default:true
+    }
 
 },
 {

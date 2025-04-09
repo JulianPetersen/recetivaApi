@@ -1,6 +1,7 @@
 import User from '../models/User'
 import Role from '../models/Role'
 import AdminUser from '../models/AdminUser'
+import customUser from '../models/customUser'
 import jwt from 'jsonwebtoken';
 import config from '../config'
 
@@ -21,6 +22,12 @@ const createUserForMobile = async (email, password, roles) => {
     }
 
     const savedUser = await newUser.save();
+
+    const newCustonUSerInfo = new customUser({
+        user: savedUser._id,
+    });
+    await newCustonUSerInfo.save();
+
     const token = jwt.sign({ id: savedUser._id }, config.SECRET);
     return { token, user: savedUser };
 };
@@ -48,8 +55,7 @@ const createUserForWeb = async (email, password, roles) => {
     });
     await newAdminInfoUser.save();
 
-    const token = jwt.sign({ id: savedUser._id }, config.SECRET);
-    return { token, user: savedUser };
+    return {user: savedUser };
 };
 
 module.exports = {

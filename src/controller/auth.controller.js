@@ -11,7 +11,6 @@ export const signUp = async (req, res) => {
     if (req.query.platform == 'mobile') {
         try {
             const { token, user } = await createUserForMobile(email, password, roles);
-            await createLog(email, 'Usuario creado correctamente','signUp','200')
             return res.status(200).json({ token,user });
         } catch (error) {
             
@@ -52,7 +51,7 @@ export const signIn = async (req, res) => {
 export const signInAdmin = async (req, res) => {
     try {
         const userFound = await User.findOne({ email: req.body.email }).populate("roles");
-
+        console.log(userFound)
         if (!userFound) return res.status(400).json({ message: 'User Not Found' });
 
         const matchPassword = await User.comparePassword(req.body.password, userFound.password);
