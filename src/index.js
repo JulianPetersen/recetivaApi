@@ -4,10 +4,11 @@ import './config/db.js'
 import {createRoles} from './libs/initialSetup'
 import morgan from 'morgan';
 import cors from 'cors'
-import {startCleanupJob} from './croneServices/DeleteLogs'
+
 //routes
 import authRoutes from './routes/auth.routes.js';
 import recetasRoutes from'./routes/recetas.routes.js'
+import infoUsers from './routes/infoUsers.routes.js'
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ createRoles();
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors())
-startCleanupJob();
+
 
 var path = require('path')
 
@@ -35,3 +36,4 @@ app.get('/', (req,res)=> {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/recetas', recetasRoutes);
+app.use('/api/infousers', infoUsers);
