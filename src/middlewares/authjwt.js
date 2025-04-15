@@ -3,6 +3,7 @@ import config  from "../config"
 import User from "../models/User"
 import Role from '../models/Role'
 
+
 export const verifyToken = async (req,res,next)=> {
     
     try {
@@ -33,8 +34,7 @@ export const isModerator = async (req,res, next) => {
             return;
         }
     }
-
-     return res.status(403).json({message: "requiere Rol de moderador"})
+    return res.status(403).json({message: "requiere Rol de moderador"})
 }
 
 

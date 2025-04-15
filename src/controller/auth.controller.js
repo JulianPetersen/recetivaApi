@@ -2,31 +2,45 @@ import User from '../models/User'
 import jwt from 'jsonwebtoken'
 import config from '../config'
 import { createUserForMobile, createUserForWeb } from '../services/authService';
-import {createLog} from '../services/logWorkFlow'
+import LogModel from '../models/LogModel';
+import FunctionLogger from '../libs/Logs.js'
+
 
 export const signUp = async (req, res) => {
-
+    const logger = new FunctionLogger();
     const { email, password, roles } = req.body;
-
-    if (req.query.platform == 'mobile') {
-        try {
-            const { token, user } = await createUserForMobile(email, password, roles);
-            return res.status(200).json({ token,user });
-        } catch (error) {
-            
-            return res.status(500).json({ message: 'Error en la creación del usuario', error: error.message });
+    try {
+        if (req.query.platform == 'mobile') {
+            try {
+                logger.log('Inicio de signUp en plataforma Mobile')
+                const { token, user } = await createUserForMobile(email, password, roles);
+                logger.log('Usuario Creado Correctamente')
+                return res.status(200).json({ token,user });
+            } catch (error) {
+                logger.log(`Error en la creacion del usuario ${error.message}`)
+                return res.status(400).json({ message: 'Error en la creación del usuario', error: error.message });
+            }
+        } else if (req.query.platform == 'web') {
+            try {
+                logger.log('Inicio de signUp en plataforma Web',)
+                const { token, user } = await createUserForWeb(email, password, roles);
+                logger.log('Usuario Creado Correctamente','signUp')
+                return res.status(200).json({ token,user });
+            } catch (error) {
+                logger.log(`Error en la creacion del usuario ${error.message}`)
+                return res.status(400).json({ message: 'Error en la creación del usuario', error: error.message });
+            }
+        } else {
+            logger.log('La plataforma Indicada no es válida')
+            return res.status(400).json({ message: 'Plataforma no válida' });
         }
-    } else if (req.query.platform == 'web') {
-        try {
-            const { token, user } = await createUserForWeb(email, password, roles);
-            return res.status(200).json({ token,user });
-        } catch (error) {
-            return res.status(500).json({ message: 'Error en la creación del usuario', error: error.message });
-        }
-    } else {
-        return res.status(400).json({ message: 'Plataforma no válida' });
+    } catch (error) {
+        logger.log(`Error en la creacion del usuario ${error.message}`)
+        return res.status(400).json({ message: 'Error en la creación del usuario', error: error.message });
     }
-
+    finally{
+        logger.save(logger.getLogs(),'SIGN-UP')
+    }
 }
 
 
