@@ -9,6 +9,12 @@ const logsSchema = new Schema({
     },
     page:{
         type:String
+    },
+    mail:{
+        type:String
+    },
+    status:{
+        type:Number
     }
 
 

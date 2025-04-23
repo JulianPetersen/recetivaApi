@@ -2,6 +2,7 @@ import  jwt, { decode }  from "jsonwebtoken"
 import config  from "../config"
 import User from "../models/User"
 import Role from '../models/Role'
+import InfoUserADmin from '../models/AdminUser'
 
 
 export const verifyToken = async (req,res,next)=> {
@@ -35,6 +36,19 @@ export const isModerator = async (req,res, next) => {
         }
     }
     return res.status(403).json({message: "requiere Rol de moderador"})
+}
+
+
+export const isActiveUser = async (req,res,next) => {
+    const user = await User.findById(req.userId)
+    console.log('EL USER ID ES',req.userId)
+    const userInfo = await InfoUserADmin.findOne({user:user})
+    // console.log('IS ACTIVE USER MIDDLEWAREw',userInfo)
+    if(userInfo.isActive == true){
+        next()
+        return
+    }
+    return res.status(403).json({message: "Su Usuario está desacrivado, debe comunicarse con admiistracion para solucionar el problema"})
 }
 
 

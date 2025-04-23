@@ -19,12 +19,14 @@ class FunctionLogger {
       this.logs = '';
     }
 
-   async save(logs,page){
+   async save(logs,page,mail,status){
       await LogModel.create({
         logs:logs,
-        page:page
+        page:page,
+        mail:mail,
+        status:status
     })
-    clear()
+    this.clear()
     }
   }
   

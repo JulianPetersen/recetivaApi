@@ -7,7 +7,6 @@ import User from '../models/User'
 //#region Admin Users
 export const getInfoAdminUserById = async (req, res) => { 
     try {
-        
         const adminUser = await AdminUser.findById(req.params.id)
         res.json(adminUser);
     } catch (error) {
@@ -19,6 +18,7 @@ export const getInfoAdminUserById = async (req, res) => {
 
 export const getUsersAdmin = async (req,res) => {
     try {
+        console.log('EL BODY ES',req.body)
         const adminUsers = await AdminUser.find()
         .populate('user')
         res.json(adminUsers)

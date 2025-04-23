@@ -7,11 +7,11 @@ import {authJwt} from '../middlewares'
 
 
 
-router.post('/',[authJwt.verifyToken, authJwt.isAdmin],upload.single('img'),recetaCtrl.createRecetas)
-router.get('/', recetaCtrl.getRecetas);
-router.get('/:recetaId',recetaCtrl.getRecetasById);
-router.put('/:recetaId', [authJwt.verifyToken, authJwt.isAdmin],upload.single('img'),recetaCtrl.updateReceta);
-router.delete('/:recetaId', [authJwt.verifyToken, authJwt.isAdmin],recetaCtrl.deleteReceta)
+router.post('/',[authJwt.verifyToken,authJwt.isActiveUser],upload.single('img'),recetaCtrl.createRecetas)
+router.get('/', [authJwt.verifyToken,authJwt.isActiveUser],recetaCtrl.getRecetas);
+router.get('/:recetaId',[authJwt.verifyToken,authJwt.isActiveUser],recetaCtrl.getRecetasById);
+router.put('/:recetaId',[authJwt.verifyToken,authJwt.isActiveUser], [authJwt.verifyToken],upload.single('img'),recetaCtrl.updateReceta);
+router.delete('/:recetaId',[authJwt.verifyToken,authJwt.isActiveUser], [authJwt.verifyToken],recetaCtrl.deleteReceta)
 
 
 export default router 
