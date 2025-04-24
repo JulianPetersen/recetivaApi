@@ -35,7 +35,8 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: 'Plataforma no válida' });
         }
     } catch (error) {
-        logger.log(`Error en la creacion del usuario en ${error.message}`)
+        console.log('llegamos al final catch')
+        logger.log(`Error en la creacion del usuario ${error.message}`)
         logger.save(logger.getLogs(),'SIGN-UP',email,400)
         return res.status(400).json({ message: 'Error en la creación del usuario', error: error.message });
     }
