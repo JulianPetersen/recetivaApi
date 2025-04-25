@@ -10,11 +10,20 @@ export const getInfoAdminUserById = async (req, res) => {
         const adminUser = await AdminUser.findById(req.params.id)
         res.json(adminUser);
     } catch (error) {
-        await logWorkFlow.createLog()
+        
         res.status(400).json(error);
     }
 }
 
+export const getInfoAdminUserByUserId = async (req,res) => {
+    try{
+        const adminUser = await AdminUser.findOne({user:req.params.userId})
+        res.status(200).json(adminUser)
+        
+    }catch{
+        res.status(400).json(error)
+    }
+}
 
 export const getUsersAdmin = async (req,res) => {
     try {
@@ -41,6 +50,38 @@ export const updateDataAdminUser = async (req,res) => {
     }
 }
 
+
+export const searchUserByMail = async (req,res) => {
+    try {
+        const emailFragment = req.query.email 
+    
+        if (!emailFragment) {
+          return res.status(400).json({ message: 'El fragmento de email es requerido' });
+        }
+    
+        const regex = new RegExp('^' + emailFragment, 'i');
+    
+        // Buscamos adminUsers y populamos el campo user
+        const users = await AdminUser.find()
+          .populate({
+            path: 'user',
+            match: { email: regex }, // Acá es donde aplicamos el filtro
+          })
+          .exec();
+    
+        // Filtrar solo los que efectivamente tienen user (porque los demás no hicieron match)
+        const filteredUsers = users.filter(u => u.user !== null);
+    
+        if (filteredUsers.length === 0) {
+            return res.json(filteredUsers);
+        }
+    
+        res.json(filteredUsers);
+      } catch (error) {
+        console.error('Error al buscar usuarios:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+      }
+}
 //#endregion
 
 
