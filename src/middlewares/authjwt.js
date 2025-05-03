@@ -3,7 +3,7 @@ import config  from "../config"
 import User from "../models/User"
 import Role from '../models/Role'
 import InfoUserADmin from '../models/AdminUser'
-
+import logger from '../libs/logger.js';
 
 export const verifyToken = async (req,res,next)=> {
     
@@ -35,6 +35,7 @@ export const isModerator = async (req,res, next) => {
             return;
         }
     }
+  
     return res.status(403).json({message: "requiere Rol de moderador"})
 }
 
@@ -48,12 +49,14 @@ export const isActiveUser = async (req,res,next) => {
         next()
         return
     }
+        
     return res.status(403).json({message: "Su Usuario está desacrivado, debe comunicarse con admiistracion para solucionar el problema"})
 }
 
 
 export const isAdmin = async (req,res, next) => {
     const user = await User.findById(req.userId)
+    console.log('EL USUARIO ES', user)
     const roles =  await Role.find({_id: {$in: user.roles}})
 
    for(let i = 0; i < roles.length; i++){
@@ -62,6 +65,6 @@ export const isAdmin = async (req,res, next) => {
            return;
        }
    }
-
+   logger.error(`requiere rol administrador`,{email:user.email})
     return res.status(403).json({message: "requiere Rol de administrador"})
 }

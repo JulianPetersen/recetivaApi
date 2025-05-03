@@ -6,7 +6,7 @@ import {authJwt} from '../middlewares'
 
 
 
-router.get('/adminUsers',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.getUsersAdmin);
+router.get('/adminUsers',[authJwt.verifyToken,authJwt.isActiveUser,authJwt.isAdmin], infoUsersCtrl.getUsersAdmin);
 router.get('/adminUsers/searchByEmail',[authJwt.verifyToken,authJwt.isActiveUser],infoUsersCtrl.searchUserByMail)
 router.get('/adminUsers/:id',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.getInfoAdminUserById);
 router.put('/adminUsers/:id',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.updateDataAdminUser);

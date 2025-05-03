@@ -9,6 +9,7 @@ import cors from 'cors'
 import authRoutes from './routes/auth.routes.js';
 import recetasRoutes from'./routes/recetas.routes.js'
 import infoUsers from './routes/infoUsers.routes.js'
+import categoriaRecetasServices from './routes/categoriasReceta.routes'
 
 dotenv.config();
 
@@ -37,3 +38,4 @@ app.get('/', (req,res)=> {
 app.use('/api/auth', authRoutes);
 app.use('/api/recetas', recetasRoutes);
 app.use('/api/infousers', infoUsers);
+app.use('/api/categoriaRecetas', categoriaRecetasServices);

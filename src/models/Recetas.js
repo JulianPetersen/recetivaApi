@@ -18,8 +18,13 @@ const recetasSchema = new Schema({
         type:String
     },
     nutricionista:{
-        type:String
-    }
+        ref: "User",
+        type: Schema.Types.ObjectId
+    },
+    category:[{
+        ref: "CategoriasReceta",
+        type: Schema.Types.ObjectId
+    }],
 
 },
 {
