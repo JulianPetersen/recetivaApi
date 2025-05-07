@@ -12,6 +12,8 @@ router.get('/adminUsers/:id',[authJwt.verifyToken,authJwt.isActiveUser], infoUse
 router.put('/adminUsers/:id',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.updateDataAdminUser);
 router.get('/adminUsers/getByUserId/:userId',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.getInfoAdminUserByUserId);
 
+router.get('/allusers',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.getAllUsers);
+
 router.get('/customuser',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.getInfoCustomUser);
 router.get('/customuser/:id',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.getInfoCustomUserById);
 router.put('/customuser/:id',[authJwt.verifyToken,authJwt.isActiveUser], infoUsersCtrl.updateDataCustomUser);

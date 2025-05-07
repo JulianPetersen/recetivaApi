@@ -109,7 +109,7 @@ export const signInAdmin = async (req, res) => {
         }
         
         // Generar el token si cumple con los requisitos
-        const token = jwt.sign({ id: userFound._id }, config.SECRET, { expiresIn: "1d" });
+        const token = jwt.sign({ id: userFound._id }, config.SECRET);
         logger.info(`sesion iniciada correctamente`, {email:req.body.email})
         res.json({
             token: token,

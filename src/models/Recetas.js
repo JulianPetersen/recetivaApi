@@ -21,7 +21,7 @@ const recetasSchema = new Schema({
         ref: "User",
         type: Schema.Types.ObjectId
     },
-    category:[{
+    arrayCategory:[{
         ref: "CategoriasReceta",
         type: Schema.Types.ObjectId
     }],

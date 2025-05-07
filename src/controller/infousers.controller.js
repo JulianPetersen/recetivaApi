@@ -136,4 +136,14 @@ export const deleteCustomUser = async (req,res) => {
         res.status(400).json(error);
     }
 }
+
+
+export const getAllUsers = async (req,res) => {
+    try {
+        const allUsers = await User.find()
+        res.status(200).json(allUsers)
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
 //#endregion
